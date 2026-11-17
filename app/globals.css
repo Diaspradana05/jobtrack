@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply min-h-screen bg-paper text-ink antialiased;
+  }
+  ::selection {
+    background: rgba(11, 107, 79, 0.18);
+  }
+  /* cincin fokus yang jelas untuk navigasi keyboard (kolom isian punya cincin sendiri) */
+  :focus-visible {
+    outline: 2px solid #0b6b4f;
+    outline-offset: 2px;
+  }
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: none;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #d6d3d1 transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d6d3d1;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer components {
+  .input {
+    @apply w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm outline-none transition placeholder:text-stone-400 hover:border-stone-400 focus:border-brand focus:ring-2 focus:ring-brand/20;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-dark active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-ink transition hover:border-stone-400 hover:bg-stone-50 active:scale-[.98] disabled:opacity-50 disabled:active:scale-100;
+  }
+  .card {
+    @apply rounded-3xl border border-stone-200 bg-white p-6 shadow-soft;
+  }
+  .card-hover {
+    @apply transition duration-200 hover:-translate-y-0.5 hover:shadow-lift;
+  }
+  .page-title {
+    @apply text-2xl font-extrabold tracking-tight md:text-3xl;
+  }
+  .page-desc {
+    @apply mt-1 text-sm text-stone-500;
+  }
+  .section-title {
+    @apply font-bold tracking-tight;
+  }
+  .skeleton {
+    @apply animate-pulse rounded-xl bg-stone-200/70;
+  }
+}
+
+/* hormati pengguna yang mengurangi animasi */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

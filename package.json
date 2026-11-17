@@ -1,0 +1,39 @@
+{
+  "name": "jobtrack",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^1.2.19",
+    "@ai-sdk/groq": "^1.2.9",
+    "@ai-sdk/react": "^1.2.12",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.45.4",
+    "ai": "^4.3.16",
+    "docx": "^9.15.2",
+    "jspdf": "^3.0.4",
+    "jspdf-autotable": "^5.0.9",
+    "lucide-react": "^0.453.0",
+    "mammoth": "^1.13.0",
+    "next": "14.2.15",
+    "pptxgenjs": "^3.12.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "xlsx": "^0.18.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.5.4"
+  }
+}
