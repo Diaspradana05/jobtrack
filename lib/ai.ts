@@ -49,17 +49,28 @@ async function attempt<T>(fn: () => PromiseLike<T>, tries = 2, delayMs = 1500): 
   throw last;
 }
 
+/** Batas waktu per model. Tanpa ini satu model yang "menggantung" menghabiskan seluruh 60 detik milik Vercel. */
+const PER_MODEL_TIMEOUT_MS = Number(process.env.AI_MODEL_TIMEOUT_MS) || 20_000;
+
+function withTimeout<P extends { abortSignal?: AbortSignal }>(params: P, ms = PER_MODEL_TIMEOUT_MS): P {
+  const t = AbortSignal.timeout(ms);
+  return { ...params, abortSignal: params.abortSignal ? AbortSignal.any([params.abortSignal, t]) : t };
+}
+
+/** Error karena kena batas waktu per model dianggap layak dicoba model cadangan. */
+const isTimeout = (e: unknown) => e instanceof Error && (e.name === "TimeoutError" || e.name === "AbortError");
+
 export function fallbackMiddleware(fallbacks: LanguageModelV1[]): LanguageModelV1Middleware {
   return {
-    wrapGenerate: async ({ doGenerate, params, model }) => {
+    wrapGenerate: async ({ params, model }) => {
       try {
-        return await attempt(() => doGenerate());
+        return await attempt(() => model.doGenerate(withTimeout(params)));
       } catch (first) {
-        if (!FALLBACK_ON.test(msgOf(first))) throw first;
+        if (!FALLBACK_ON.test(msgOf(first)) && !isTimeout(first)) throw first;
         const errors = [{ model: model.modelId, error: first }];
         for (const m of fallbacks) {
           try {
-            return await attempt(() => m.doGenerate(params));
+            return await attempt(() => m.doGenerate(withTimeout(params)));
           } catch (e) {
             errors.push({ model: m.modelId, error: e });
           }
@@ -67,9 +78,9 @@ export function fallbackMiddleware(fallbacks: LanguageModelV1[]): LanguageModelV
         throw combined(errors);
       }
     },
-    wrapStream: async ({ doStream, params, model }) => {
+    wrapStream: async ({ params, model }) => {
       try {
-        return await attempt(() => doStream());
+        return await attempt(() => model.doStream(params));
       } catch (first) {
         if (!FALLBACK_ON.test(msgOf(first))) throw first;
         const errors = [{ model: model.modelId, error: first }];
